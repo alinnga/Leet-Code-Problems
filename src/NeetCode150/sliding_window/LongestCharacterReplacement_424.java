@@ -5,36 +5,31 @@ import java.util.Map;
 
 public class LongestCharacterReplacement_424 {
     public static void main(String[] args) {
-        String s = "AABABBA";
-        int k = 1;
+        String s = "ABAB";
+        int k = 2;
         System.out.println(characterReplacement(s, k));
     }
     public static int characterReplacement(String s, int k) {
         int result = 0;
-        int startWindow = 0;
-        int endWindow = 0;
+        int start = 0;
         char[] arrayStr = s.toCharArray();
-        int windowLen = 1;
-        while(endWindow < arrayStr.length){
-            int internalPointer = startWindow;
-            HashMap<Character, Integer> occurrencesCount = new HashMap<>();
-            while(internalPointer <= endWindow){
-                char currentChar = arrayStr[internalPointer];
-                occurrencesCount.computeIfPresent(currentChar, (key, val)-> val+1);
-                occurrencesCount.putIfAbsent(currentChar, 1);
-                internalPointer++;
-            }
+        int windowLen;
+        HashMap<Character, Integer> occurrencesCount = new HashMap<>();
+        for(int end = 0; end < arrayStr.length; end++){
+            windowLen = end - start + 1;
+            occurrencesCount.put(arrayStr[end], occurrencesCount.getOrDefault(arrayStr[end], 0)+1);
             int maxOccurrence = 0;
             for(Map.Entry<Character, Integer> entry : occurrencesCount.entrySet()){
                 if(entry.getValue() > maxOccurrence) maxOccurrence = entry.getValue();
             }
+
             if(windowLen - maxOccurrence <= k && windowLen > result) result = windowLen;
 
-            endWindow++;
             if(windowLen - maxOccurrence > k){
-                startWindow++;
+                occurrencesCount.put(arrayStr[start], occurrencesCount.get(arrayStr[start])-1);
+                start++;
             }
-            windowLen = endWindow - startWindow + 1;
+
         }
         return result;
     }
